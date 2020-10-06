@@ -16,6 +16,8 @@ export default (app) => {
             const { user, token } = await authService.Login(email, password);
 
             res.cookie('auth',token,{maxAge:900000, httpOnly:true, secure: false})
+            const __dirname = process.cwd();
+            res.sendFile('src/index.html', {root: __dirname })
             return res.status(200).end();
         } catch(e) {
             const {code, json} = MessengerError.PrepareResponse(e);

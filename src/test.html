@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline'">
+    <title>Title</title>
+</head>
+<body>
+    messenger
+
+    <input id="email" type="text" name="email">
+    <input id="password" type="text" name="password">
+    <button id="send">Send</button>
+
+    <script>
+        document.getElementById("send").onclick = function () {
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: {
+                        email: document.getElementById("email").value,
+                        password: document.getElementById("password").value,
+                    }
+                })
+            });
+        }
+
+
+
+
+        let socket = new WebSocket("ws://localhost:8001/");
+
+        socket.onopen = function(e) {
+            socket.send("Меня зовут Джон");
+        };
+
+        socket.onmessage = function(event) {
+            console.log(`[message] Данные получены с сервера: ${event.data}`);
+        };
+
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+            } else {
+                console.log('[close] Соединение прервано');
+            }
+        };
+    </script>
+</body>
+</html>
