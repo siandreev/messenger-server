@@ -18,6 +18,10 @@ const MessagesSchema = new Schema({
     date: {
         type: Date,
         required: true,
+    },
+    conversationId: {
+        type: String,
+        required: true
     }
 });
 

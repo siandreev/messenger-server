@@ -1,4 +1,5 @@
 import ClientController from "./ClientController.js";
+import Controller from "./Controller.js";
 
 class ClientsInfo {
     constructor() {
@@ -40,12 +41,36 @@ class ClientsInfo {
         }
     }
 
-    notifyAboutOnline(loggedInUserTag) {
-        //TODO: implement online notification
+    async notifyAboutOnline(loggedInUserTag) {
+        await this.sendInfoToAllUserContacts(loggedInUserTag, {
+            type: "contactOnline",
+            code: 3101,
+            body: {
+                loggedInUserTag
+            }
+        });
     }
 
-    notifyAboutOffline(loggedOutUserTag) {
-        //TODO: implement offline notification
+    async notifyAboutOffline(loggedOutUserTag) {
+        await this.sendInfoToAllUserContacts(loggedOutUserTag, {
+            type: "contactOffline",
+            code: 3100,
+            body: {
+                loggedOutUserTag
+            }
+        });
+    }
+
+    async sendInfoToAllUserContacts(userTag, info) {
+        let contactsTags = await Controller.getContactsList(userTag);
+        contactsTags =Array.from(new Set(contactsTags));
+
+        this.clients.forEach(onlineUser => {
+            if (contactsTags.includes(onlineUser.tag)) {
+                const response = JSON.stringify(info)
+                onlineUser.ws.send(response);
+            }
+        })
     }
 }
 

@@ -22,6 +22,7 @@ function allowAccess(ws, req) {
     try {
         const user = req.currentUser;
         clientsInfo.addClient(user.tag, ws);
+        clientsInfo.notifyAboutOnline(user.tag);
 
         ws.on('message', function (msg) {
             try {
@@ -51,7 +52,9 @@ function allowAccess(ws, req) {
         });
 
         ws.on('close', function () {
-            clientsInfo.removeClient(user.tag);
+            clientsInfo.notifyAboutOffline(user.tag).finally(() =>
+                clientsInfo.removeClient(user.tag)
+            );
         });
 
     } catch (e) {
