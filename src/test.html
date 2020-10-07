@@ -28,26 +28,20 @@
             });
         }
 
+            var socket = new WebSocket('ws://192.168.0.101:8001/');
 
+            socket.onmessage = function(event) {
+                console.log(`[message] Данные получены с сервера: ${event.data}`);
+            };
 
+            socket.onclose = function(event) {
+                if (event.wasClean) {
+                    console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+                } else {
+                    console.log('[close] Соединение прервано');
+                }
+            };
 
-        let socket = new WebSocket("ws://localhost:8001/");
-
-        socket.onopen = function(e) {
-            socket.send("Меня зовут Джон");
-        };
-
-        socket.onmessage = function(event) {
-            console.log(`[message] Данные получены с сервера: ${event.data}`);
-        };
-
-        socket.onclose = function(event) {
-            if (event.wasClean) {
-                console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
-            } else {
-                console.log('[close] Соединение прервано');
-            }
-        };
     </script>
 </body>
 </html>

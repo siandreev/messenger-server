@@ -4,10 +4,6 @@ import MissingMethodError from "../errors/JsonRpcError/MissingMethodError.js";
 import JsonRpcError from "../errors/JsonRpcError/JsonRpcError.js";
 
 class JsonRpcParser {
-    constructor() {
-
-    }
-
     parseRequest(json) {
         let request;
 

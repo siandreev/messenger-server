@@ -4,19 +4,19 @@ import JsonRpcError from "../errors/JsonRpcError/JsonRpcError.js";
 import ArgumentsError from "../errors/JsonRpcError/ArgumentsError.js";
 
 class Controller {
-    constructor(tag) {
-        this.tag = tag;
-    }
-
-    async getMessagesWithUser(receiverTag, startIndex = 0, endIndex = 100) {
-        if (typeof startIndex !== "number" || typeof endIndex !== "number" || startIndex >= endIndex) {
+    static async getMessagesWithUser(user1Tag, user2Tag, startIndex = 0, endIndex = 100) {
+        if (!user1Tag ||!user2Tag || typeof startIndex !== "number" || typeof endIndex !== "number" || startIndex >= endIndex) {
             throw new ArgumentsError();
         }
-        const messages = await MessageModel.find({receiverTag, senderTag: this.tag}, ).skip(startIndex).limit(endIndex);
+        const messages = await MessageModel.find()
+            .or([{receiverTag : user1Tag, senderTag: user2Tag}, {receiverTag : user2Tag, senderTag: user1Tag}])
+            .sort([['date', -1]])
+            .skip(startIndex)
+            .limit(endIndex);
         return messages;
     }
 
-    async getDialogsList(startIndex = 0, endIndex = 30) {
+    static async getDialogsList(userTag, startIndex = 0, endIndex = 30) {
         if (typeof startIndex !== "number" || typeof endIndex !== "number" || startIndex >= endIndex) {
             throw new ArgumentsError();
         }
@@ -25,7 +25,7 @@ class Controller {
                 {
                     $match:
                         {
-                            receiverTag: `${this.tag}`
+                            receiverTag: userTag
                         }
                 },
                 {
@@ -53,24 +53,29 @@ class Controller {
         return dialogs;
     }
 
-    async sendMessageToUser(receiverTag, text) {
+    static async sendMessageToUser(senderTag, receiverTag, text) {
         const userByTag = await UserModel.find({tag: receiverTag}).limit(1);
 
-        if (!userByTag.length || receiverTag === this.tag) {
+        if (!receiverTag || !userByTag.length || receiverTag === senderTag) {
             throw new ArgumentsError();
         }
 
-        const success = await MessageModel.create({
-            senderTag: this.tag,
+        const newMessage = {
+            senderTag,
             receiverTag,
             text,
             date: Date.now()
-        })
+        };
+
+        const success = await MessageModel.create(newMessage)
         if (!success) {
             throw new JsonRpcError();
         }
-        const res = `sent "${text}" to ${receiverTag}`;
-        return res;
+
+        return {
+            status :"OK",
+            message: newMessage
+        };
     }
 }
 
