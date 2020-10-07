@@ -37,8 +37,16 @@ function allowAccess(ws, req) {
             }
 
             parser.parseRequest(msg);
-            const response = parser.executeMethod(client.controller);
-            ws.send(response);
+            parser.executeMethod(client.controller).then( response => {
+                ws.send(response);
+            }).catch(reason => {
+                if (reason instanceof JsonRpcError) {
+                    ws.send(parser.stringifyError(reason));
+                } else {
+                    ws.send(parser.stringifyError(new JsonRpcError()));
+                }
+            })
+
 
         } catch (e) {
             if (e instanceof JsonRpcError) {

@@ -27,7 +27,7 @@ class JsonRpcParser {
         return request;
     }
 
-    executeMethod(obj) {
+    async executeMethod(obj) {
         const method = this.method.toString();
         if (!Object.getPrototypeOf(obj).hasOwnProperty(method) || (typeof obj[method] !== "function")) {
             throw new MissingMethodError()
@@ -36,9 +36,9 @@ class JsonRpcParser {
         try {
             let result;
             if (this.params) {
-               result = Array.isArray(this.params) ?  obj[method](...this.params) : obj[method](this.params)
+               result = Array.isArray(this.params) ? await obj[method](...this.params) : await obj[method](this.params)
             } else {
-                result = obj[method]();
+                result = await obj[method]();
             }
             return this.stringifyResult(result);
 

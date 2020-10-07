@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import { randomBytes } from 'crypto';
 import jwt from 'jsonwebtoken';
-import UserModel from '../model/model.js';
+import UserModel from '../model/UserModel.js';
 
 import IncorrectPasswordError from "../errors/AuthError/IncorrectPasswordError.js";
 import AccountNotExistError from "../errors/AuthError/AccountNotExistError.js";

@@ -1,4 +1,4 @@
-import UserModel from '../model/model.js';
+import UserModel from '../model/UserModel.js';
 import NoAuthJWTError from "../errors/AuthError/NoAuthJWTError.js";
 import MessengerError from "../errors/MessengerError.js";
 import AuthError from "../errors/AuthError/AuthError.js";
