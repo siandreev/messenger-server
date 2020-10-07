@@ -48,9 +48,13 @@ class Controller {
                     $sort: {
                         "date": -1
                     }
-                },
+                }
             ]
         ).skip(startIndex).limit(endIndex);
+        for (let dialog of dialogs) {
+            const tag = dialog.senderTag === userTag ? dialog.receiverTag : dialog.senderTag;
+            dialog.userInfo = await UserModel.findOne({tag}).select("tag firstName lastName");
+        }
         return dialogs;
     }
 
@@ -127,6 +131,20 @@ class Controller {
             return newConversation.id;
         }
         return conversation[0].id;
+    }
+
+    static async getSelfInfo(tag) {
+        return UserModel.findOne({tag}).select("tag firstName lastName");
+    }
+
+    static async setSelfInfo(tag, firstName, lastName) {
+        if (firstName) {
+            await UserModel.findOneAndUpdate({tag}, {firstName})
+        }
+        if (lastName) {
+            await UserModel.findOneAndUpdate({tag}, {lastName})
+        }
+        return await Controller.getSelfInfo(tag);
     }
 }
 

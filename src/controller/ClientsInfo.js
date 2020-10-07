@@ -72,6 +72,10 @@ class ClientsInfo {
             }
         })
     }
+
+    getOnlineUsersTagsList() {
+        return this.clients.map(client => client.tag);
+    }
 }
 
 export default ClientsInfo;

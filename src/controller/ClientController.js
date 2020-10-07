@@ -11,7 +11,14 @@ class ClientController {
     }
 
     async getDialogsList(startIndex = 0, endIndex = 30) {
-        return await Controller.getDialogsList(this.tag, startIndex, endIndex);
+        const dialogs =  await Controller.getDialogsList(this.tag, startIndex, endIndex);
+        const onlineUsersTagsList = this.clientsInfo.getOnlineUsersTagsList();
+
+        for(let dialog of dialogs) {
+            dialog.userInfo._doc.isOnline = onlineUsersTagsList.includes(dialog.userInfo.tag);
+        }
+
+        return dialogs;
     }
 
     async sendMessageToUser(receiverTag, text) {
@@ -21,6 +28,14 @@ class ClientController {
                 result.message.text, result.message.date)
         }
         return result;
+    }
+
+    async getSelfInfo() {
+        return await Controller.getSelfInfo(this.tag);
+    }
+
+    async setSelfInfo(firstName, lastName) {
+        return await Controller.setSelfInfo(this.tag, firstName, lastName);
     }
 }
 
