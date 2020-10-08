@@ -1,14 +1,14 @@
-## messenger-server
+# messenger-server
 Node js implementation of the server side for the messenger.
 
-#### Capabilities
+## Capabilities
 - Creation and saving in the database users based on tag (starts with "@"), first name, last name, email, password (The password is hashed with argon2).
 - Authorization and saving JWT in cookies.
 - Connecting clients who received a JWT via websockets.
 - Execution of methods for working with messages and dialogs via json-rpc 2.0 (for example sending a message, getting a contact list, etc.).
 - Notifying online customers (that is, customers with an open web socket) about new messages, users logging into the network from the contact list and changing their personal data.
 
-#### Setting up and running
+## Setting up and running
 First, configure your application in config.json file and place it in the server root. The file should be in the following format:
 ```
 {
