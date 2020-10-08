@@ -6,14 +6,38 @@
     <title>Title</title>
 </head>
 <body>
-    messenger
+    <h2>How to use it?</h2>
+    <p>
+        1) Install any cookie control extension (<a href="https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm">for chrome</a>)<br/>
+        2) Open developer tools<br/>
+        3) Register using a special form.<br/>
+        4) You will see that a new "auth" cookie has appeared and message in the console, or in the console you will see a 401 status if the entered data is incorrect.<br/>
+        5) Enter the local ip address of the running server and click "generate sun" to create a websocket<br/>
+        6) Use json-rpc syntax in console to communicate with the server, for example "socket.send ('{" jsonrpc ":" 2.0 "," method ":" sendMessageToUser "," params ": ["@YOUR_FRIEND'S_TAG"," hi "], "id": "1"} ') "<br/>
+        Read more about the methods in the readme.<br/>
+        7) To check authorization, delete cookies and try to log into your account using the login field, then see paragraph 4).</p>
 
-    <input id="email" type="text" name="email">
-    <input id="password" type="text" name="password">
-    <button id="send">Send</button>
+    <h3>Sign up</h3>
+    <label for="tag">Tag (starts with "@")</label><input id="tag" type="text" name="tag"><br/>
+    <label for="lastName">Last name</label><input id="lastName" type="text" name="lastName"><br/>
+    <label for="firstName">First name</label><input id="firstName" type="text" name="firstName"><br/>
+    <label for="email2">Email</label><input id="email2" type="text" name="email"><br/>
+    <label for="password2">Password</label><input id="password2" type="text" name="password"><br/>
+    <button id="send2">Register</button><br/>
 
+    <br/>
+    <br/>
+
+    <h3>login</h3>
+    <label for="email1">Email</label><input id="email1" type="text" name="email"><br/>
+    <label for="password1">Password</label><input id="password1" type="text" name="password"><br/>
+    <button id="send1">Login</button><br/>
+
+    <h3>Create websocket</h3>
+    <label for="ip">Server ip and websockets port (for example, "192.168.0.107:8001")</label><input id="ip" type="text" name="ip"><br/>
+    <button id="generate">Create websocket</button>
     <script>
-        document.getElementById("send").onclick = function () {
+        document.getElementById("send1").onclick = function () {
             fetch('/login', {
                 method: 'POST',
                 headers: {
@@ -21,27 +45,47 @@
                 },
                 body: JSON.stringify({
                     user: {
-                        email: document.getElementById("email").value,
-                        password: document.getElementById("password").value,
+                        email: document.getElementById("email1").value,
+                        password: document.getElementById("password1").value,
                     }
                 })
-            });
+            }).then(result => result.text()).then(mes => console.log(mes));
         }
 
-            var socket = new WebSocket('ws://192.168.0.101:8001/');
+        document.getElementById("send2").onclick = function () {
+            fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: {
+                        tag: document.getElementById("tag").value,
+                        firstName: document.getElementById("firstName").value,
+                        lastName: document.getElementById("lastName").value,
+                        email: document.getElementById("email2").value,
+                        password: document.getElementById("password2").value,
+                    }
+                })
+            }).then(result => result.text()).then(mes => console.log(mes));
+        }
 
+        document.getElementById("generate").onclick = function () {
+            const ip = document.getElementById("ip").value;
+            window.socket = new WebSocket(`ws://${ip}/`);
+            console.log("Socket created");
             socket.onmessage = function(event) {
-                console.log(`[message] Данные получены с сервера: ${event.data}`);
+                console.log(`[message] Data from server: ${event.data}`);
             };
 
             socket.onclose = function(event) {
                 if (event.wasClean) {
-                    console.log(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+                    console.log(`[close] Connection closed clearly, code=${event.code} cause=${event.reason}`);
                 } else {
-                    console.log('[close] Соединение прервано');
+                    console.log('[close] Connection interrupted');
                 }
             };
-
+        }
     </script>
 </body>
 </html>

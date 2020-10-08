@@ -19,7 +19,7 @@ export default (app) => {
             res.cookie('auth',token,{maxAge:cookieMaxAge, httpOnly:true, secure: false})
             const __dirname = process.cwd();
             res.sendFile('src/index.html', {root: __dirname })
-            return res.status(200).end();
+            return res.status(200).send("Login successful").end();
         } catch(e) {
             const {code, json} = MessengerError.PrepareResponse(e);
             return res.status(code).json(json).end();
@@ -33,7 +33,7 @@ export default (app) => {
             const { user, token } = await authService.SignUp(tag, firstName, lastName, email, password);
 
             res.cookie('auth',token,{maxAge:900000, httpOnly:true, secure: false})
-            return res.status(200).end();
+            return res.status(200).send("Sign up successful").end();
         } catch (e) {
             const {code, json} = MessengerError.PrepareResponse(e);
             return res.status(code).json(json).end();
