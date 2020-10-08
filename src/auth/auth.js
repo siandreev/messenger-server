@@ -8,7 +8,6 @@ import AccountNotExistError from "../errors/AuthError/AccountNotExistError.js";
 import UserAlreadyExistError from "../errors/SignUpError/UserAlreadyExistError.js";
 
 class AuthService {
-
     async Login(email, password) {
         const userRecord = await UserModel.findOne({ email });
         if (!userRecord) {
@@ -61,12 +60,10 @@ class AuthService {
         return jwt.sign({
             data: {
                 _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
                 tag: user.tag,
                 email: user.email
             }
-        }, 'MySuP3R_z3kr3t.', { expiresIn: '6h' }); //TODO move this to an env var
+        }, global.appConfig.JWT.privateKey, { expiresIn: global.appConfig.JWT.expiresIn });
     }
 }
 

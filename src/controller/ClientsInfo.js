@@ -61,6 +61,15 @@ class ClientsInfo {
         });
     }
 
+    async notifyAboutUserPersonalDataChanges(userTag, newData) {
+        const info = {
+            type: "contactPersonalDataChanges",
+            code: 3200,
+            body: newData
+        };
+        await this.sendInfoToAllUserContacts(userTag, info);
+    }
+
     async sendInfoToAllUserContacts(userTag, info) {
         let contactsTags = await Controller.getContactsList(userTag);
         contactsTags =Array.from(new Set(contactsTags));

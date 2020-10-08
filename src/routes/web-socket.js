@@ -5,8 +5,12 @@ import JsonRpcParser from "../controller/JsonRpcParser.js";
 import Controller from "../controller/Controller.js"
 import JsonRpcError from "../errors/JsonRpcError/JsonRpcError.js";
 import ClientsInfo from "../controller/ClientsInfo.js";
+import getCurrentIp from "../libs/getCurrentIp.js";
 
-const webSocketServer = new WebSocket.Server( {host: '192.168.0.101',port: 8001});
+const wsHost = global.appConfig.webSocket.host || getCurrentIp();
+const wsPort = global.appConfig.webSocket.port || 8001;
+
+const webSocketServer = new WebSocket.Server( {host: wsHost,port: wsPort});
 
 webSocketServer.on('connection', function(ws, req) {
     extractToken(req, null,

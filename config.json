@@ -1,0 +1,16 @@
+{
+  "JWT": {
+    "expiresIn": "72h",
+    "privateKey": "7ce59225bcd447fafed698ed754d309feba5fc69"
+  },
+  "cookie": {
+    "maxAge": "72h"
+  },
+  "webSocket": {
+    "host": "",
+    "port": 8001
+  },
+  "app": {
+    "port": 8000
+  }
+}

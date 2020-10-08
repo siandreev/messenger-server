@@ -1,4 +1,6 @@
 import Controller from "./Controller.js";
+import {isTagCorrect, isFirstNameCorrect, isLastNameCorrect, isEmailCorrect, isPasswordCorrect} from '../libs/verifyUserData.js'
+import ArgumentsError from "../errors/JsonRpcError/ArgumentsError.js";
 
 class ClientController {
     constructor(clientsInfo, tag) {
@@ -35,7 +37,27 @@ class ClientController {
     }
 
     async setSelfInfo(firstName, lastName) {
-        return await Controller.setSelfInfo(this.tag, firstName, lastName);
+        const currentUserData = await Controller.getSelfInfo(this.tag);
+        if ((firstName !== "" && !isFirstNameCorrect(firstName))
+            || (lastName !== "" && !isFirstNameCorrect(lastName))
+            || (firstName === "" && lastName === "")
+            || (firstName === "" && lastName === currentUserData.lastName)
+            || (lastName === "" && firstName === currentUserData.firstName)
+            || (firstName === currentUserData.firstName && lastName === currentUserData.lastName)) {
+            throw new ArgumentsError();
+        }
+        const updated = await Controller.setSelfInfo(this.tag, firstName, lastName);
+        const newData = {
+            tag : this.tag
+        };
+        if (firstName && firstName !== currentUserData.firstName) {
+            newData.firstName = firstName;
+        }
+        if (lastName && lastName !== currentUserData.lastName) {
+            newData.lastName = lastName;
+        }
+        await this.clientsInfo.notifyAboutUserPersonalDataChanges(this.tag, newData);
+        return updated;
     }
 }
 

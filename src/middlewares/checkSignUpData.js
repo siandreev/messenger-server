@@ -1,3 +1,5 @@
+import {isTagCorrect, isFirstNameCorrect, isLastNameCorrect, isEmailCorrect, isPasswordCorrect} from '../libs/verifyUserData.js'
+
 import NoSignUpDataProvidedError from "../errors/SignUpError/NoSignUpDataProvidedError.js";
 import IncorrectDataError from "../errors/SignUpError/IncorrectDataError.js";
 
@@ -12,27 +14,4 @@ export default async (req, res, next) => {
             throw new IncorrectDataError();
     }
     return next();
-}
-
-//TODO add regex conditions
-
-function isTagCorrect(tag) {
-    return tag.length >= 1;
-}
-
-function isFirstNameCorrect(firstName) {
-    return firstName.length >= 2;
-}
-
-function isLastNameCorrect(lastName) {
-    return lastName.length >= 2;
-}
-
-function isEmailCorrect(email) {
-    const regExp = /\S+@\S+\.\S+/;
-    return regExp.test(email);
-}
-
-function isPasswordCorrect(password) {
-    return password.length >= 5;
 }

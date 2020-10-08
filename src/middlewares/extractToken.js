@@ -25,7 +25,7 @@ function getAuthCookie(req) {
 }
 
 export default jwt({
-    secret: 'MySuP3R_z3kr3t.',
+    secret: global.appConfig.JWT.privateKey,
     algorithms: ['HS256'],
     userProperty: 'token',
     getToken: getTokenFromHeader

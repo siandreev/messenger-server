@@ -13,6 +13,7 @@ class JsonRpcParser {
             throw new ParseError();
         }
 
+
         if (!request.jsonrpc || !request.method || !request.id) {
             throw new FormatError();
         }

@@ -1,3 +1,5 @@
+import './uploadConfig.js'
+
 import Express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -12,6 +14,7 @@ import './routes/web-socket.js'
 mongoose.connect("mongodb://localhost:27017/auth", { useNewUrlParser: true, useUnifiedTopology: true })
     .catch(err => {console.log(err)});
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 
 const app = new Express();
 
@@ -26,6 +29,8 @@ app.use(function(err, req, res, next) {
     return res.status(code).json(json).end();
 });
 
-app.listen(8000, async () => {
-    console.log("Server run on localhost:8000");
+const appPort = global.appConfig.app.port || 8000;
+
+app.listen(appPort, async () => {
+    console.log(`Server run on ${appPort} port`);
 });
