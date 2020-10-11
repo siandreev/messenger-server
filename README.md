@@ -90,7 +90,7 @@ Next, install the necessary modules using ```yarn install``` and start the serve
 #### Demo
 After starting the server in the console, you will see a link to the demo version of the client for testing the api. Follow the link and follow the instructions on the page.
 
-#### API
+## API
 The server uses json-rpc 2.0 api (Batch requests are not supported yet). After you have authored (there was a cookie "auth" with a JWT), you can use the following methods:
 ```
 getSelfInfo()
@@ -200,7 +200,7 @@ Requests examples:
         ],"id":"1"}
 ```
 
-#### Notifications
+## Notifications
 Notifications are received if a new message is received, a user from the contact list has logged out or logged in, or he has changed his personal data.
 
 Notification format:
