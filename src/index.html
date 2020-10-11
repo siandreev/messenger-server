@@ -34,7 +34,7 @@
     <button id="send1">Login</button><br/>
 
     <h3>Create websocket</h3>
-    <label for="ip">Server ip and websockets port (for example, "192.168.0.107:8001")</label><input id="ip" type="text" name="ip"><br/>
+    <label for="socketsPort">Websockets port (for example, 8001)</label><input id="socketsPort" type="text" name="ip"><br/>
     <button id="generate">Create websocket</button>
     <script>
         document.getElementById("send1").onclick = function () {
@@ -71,8 +71,8 @@
         }
 
         document.getElementById("generate").onclick = function () {
-            const ip = document.getElementById("ip").value;
-            window.socket = new WebSocket(`ws://${ip}/`);
+            const socketsPort = document.getElementById("socketsPort").value || 8001;
+            window.socket = new WebSocket(`ws://${window.location.host.split(":")[0]}:${socketsPort}/`);
             console.log("Socket created");
             socket.onmessage = function(event) {
                 console.log(`[message] Data from server: ${event.data}`);

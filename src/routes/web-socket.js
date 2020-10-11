@@ -2,7 +2,6 @@ import WebSocket from 'ws';
 import attachUser from "../middlewares/attachUser.js";
 import extractToken from "../middlewares/extractToken.js";
 import JsonRpcParser from "../controller/JsonRpcParser.js";
-import Controller from "../controller/Controller.js"
 import JsonRpcError from "../errors/JsonRpcError/JsonRpcError.js";
 import ClientsInfo from "../controller/ClientsInfo.js";
 import getCurrentIp from "../libs/getCurrentIp.js";

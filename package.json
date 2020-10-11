@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "src/App.js"
+    "start": "node src/App.js"
   },
   "keywords": [],
   "author": "",

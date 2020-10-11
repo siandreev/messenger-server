@@ -1,6 +1,62 @@
 # messenger-server
 Node js implementation of the server side for the messenger.
 
+The server works according to the following scheme: if the client has a JWT (json web token) with authorization data, then he can connect via the web socket protocol along the path "/". To receive this token, the user must log in: send a post-request to "/login", for example:
+```
+fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: {
+                        email: "email@example.com",
+                        password: "password",
+                    }
+                })
+            }).then(result => result.text()).then(mes => console.log(mes));
+```
+Or register: send post-request to "/signup":
+```
+fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user: {
+                        tag: "@tag",
+                        firstName: "Name",
+                        lastName: "Surname",
+                        email: "email@example.com",
+                        password: "password",
+                    }
+                })
+            }).then(result => result.text()).then(mes => console.log(mes));
+```
+
+After that, you can connect using the websocket protocol, for example:
+```
+//create socket
+const host =  "192.168.0.107:8001";
+window.socket = new WebSocket(`ws://${host}/`);
+
+socket.onmessage = function(event) {
+    console.log(`[message] Data from server: ${event.data}`);
+};
+
+socket.onclose = function(event) {
+    if (event.wasClean) {
+        console.log(`[close] Connection closed clearly, code=${event.code} cause=${event.reason}`);
+    } else {
+        console.log('[close] Connection interrupted');
+    }
+};
+
+//send message
+socket.send('{"jsonrpc": "2.0", "method": "getSelfInfo", "id": "1"}');
+```
+
 ## Capabilities
 - Creation and saving in the database users based on tag (starts with "@"), first name, last name, email, password (The password is hashed with argon2).
 - Authorization and saving JWT in cookies.
@@ -9,6 +65,7 @@ Node js implementation of the server side for the messenger.
 - Notifying online customers (that is, customers with an open web socket) about new messages, users logging into the network from the contact list and changing their personal data.
 
 ## Setting up and running
+Download app using ```git clone https://github.com/siandreev/messenger-server.git```.
 First, configure your application in config.json file and place it in the server root. The file should be in the following format:
 ```
 {
@@ -28,10 +85,10 @@ First, configure your application in config.json file and place it in the server
   }
 }
 ```
-Next, install the necessary modules using ```yarn install``` and start the server.
+Next, install the necessary modules using ```yarn install``` and start the server using ```yarn start```.
 
-#### Testing
-For testing, go to the un address of your host in the local network in the browser, for example ```http://192.168.0.107:8000```
+#### Demo
+After starting the server in the console, you will see a link to the demo version of the client for testing the api. Follow the link and follow the instructions on the page.
 
 #### API
 The server uses json-rpc 2.0 api (Batch requests are not supported yet). After you have authored (there was a cookie "auth" with a JWT), you can use the following methods:
