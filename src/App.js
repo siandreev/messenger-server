@@ -2,6 +2,7 @@ import './uploadConfig.js'
 
 import Express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import 'express-async-errors';
@@ -20,6 +21,7 @@ mongoose.set('useFindAndModify', false);
 const app = new Express();
 
 app.use(bodyParser.json());
+app.use(cors({credentials: true, origin: global.appConfig.client.url}));
 app.use(cookieParser());
 WebSocket(app);
 Routes(app);

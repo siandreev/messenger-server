@@ -82,6 +82,9 @@ First, configure your application in config.json file and place it in the server
   },
   "app": {
     "port": 8000
+  },
+  "client": {
+    "url": "http://localhost:3000"
   }
 }
 ```
