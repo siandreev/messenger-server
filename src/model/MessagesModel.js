@@ -22,6 +22,9 @@ const MessagesSchema = new Schema({
     conversationId: {
         type: String,
         required: true
+    },
+    isRead: {
+        type: Boolean
     }
 });
 

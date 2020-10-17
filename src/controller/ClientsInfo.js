@@ -70,9 +70,23 @@ class ClientsInfo {
         await this.sendInfoToAllUserContacts(userTag, info);
     }
 
+    async notifyAboutMessagesWasRead(shouldNotifyTag, messageReceiverTag) {
+        const sender = this.clients.find(client => client.tag === shouldNotifyTag);
+        const response = JSON.stringify({
+            type: "messageWasRead",
+            code: 3300,
+            body: {
+                receiverTag: messageReceiverTag
+            }
+        });
+        if (sender) {
+            sender.ws.send(response);
+        }
+    }
+
     async sendInfoToAllUserContacts(userTag, info) {
         let contactsTags = await Controller.getContactsList(userTag);
-        contactsTags =Array.from(new Set(contactsTags));
+        contactsTags = Array.from(new Set(contactsTags));
 
         this.clients.forEach(onlineUser => {
             if (contactsTags.includes(onlineUser.tag)) {

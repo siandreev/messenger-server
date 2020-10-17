@@ -9,7 +9,7 @@ import getCurrentIp from "../libs/getCurrentIp.js";
 const wsHost = global.appConfig.webSocket.host || getCurrentIp();
 const wsPort = global.appConfig.webSocket.port || 8001;
 
-const webSocketServer = new WebSocket.Server( {host: wsHost,port: wsPort});
+const webSocketServer = new WebSocket.Server( {host: "localhost",port: wsPort});
 
 webSocketServer.on('connection', function(ws, req) {
     extractToken(req, null,
@@ -20,7 +20,6 @@ webSocketServer.on('connection', function(ws, req) {
 const clientsInfo = new ClientsInfo();
 
 function allowAccess(ws, req) {
-    const parser = new JsonRpcParser();
 
     try {
         const user = req.currentUser;
@@ -28,6 +27,7 @@ function allowAccess(ws, req) {
         clientsInfo.notifyAboutOnline(user.tag);
 
         ws.on('message', function (msg) {
+            const parser = new JsonRpcParser();
             try {
                 const info = clientsInfo.getClientByTag(user.tag);
                 if (!info) {
@@ -62,9 +62,9 @@ function allowAccess(ws, req) {
 
     } catch (e) {
         if (e instanceof JsonRpcError) {
-            ws.close(parser.stringifyError(e));
+            ws.close(JsonRpcParser.stringifyError(e));
         } else {
-            ws.close(parser.stringifyError(new JsonRpcError()));
+            ws.close(JsonRpcParser.stringifyError(new JsonRpcError()));
         }
     }
 }

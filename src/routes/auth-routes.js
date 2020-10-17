@@ -32,7 +32,8 @@ export default (app) => {
             const authService = new AuthService();
             const { user, token } = await authService.SignUp(tag, firstName, lastName, email, password);
 
-            res.cookie('auth',token,{maxAge:900000, httpOnly:true, secure: false})
+            const cookieMaxAge = parseFloat(global.appConfig.cookie.maxAge) * 3600000 || 24 * 3600000;
+            res.cookie('auth',token,{maxAge:cookieMaxAge, httpOnly:true, secure: false})
             return res.status(200).send("Sign up successful").end();
         } catch (e) {
             const {code, json} = MessengerError.PrepareResponse(e);

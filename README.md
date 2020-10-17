@@ -101,6 +101,7 @@ setSelfInfo(firstName, lastName)
 sendMessageToUser(receiverTag, text)
 getDialogsList(startIndex = 0, endIndex = 30)
 getMessagesWithUser(receiverTag, startIndex = 0, endIndex = 100)
+markMessagesWithUserAsRead(senderTag)
 ```
 
 Requests examples:
@@ -116,6 +117,9 @@ Requests examples:
 
 --> {"jsonrpc": "2.0", "method": "sendMessageToUser", "params": ["@admin", "hi, admin"], "id": "1"}
 <-- {"jsonrpc":2,"result":{"status":"OK","message":{"senderTag":"@siandreev","receiverTag":"@admin","text":"hi, admin","date":1602158818458}},"id":"1"}
+
+--> {"jsonrpc": "2.0", "method": "markMessagesWithUserAsRead", "params": ["@admin"], "id": "1"}
+<-- {"jsonrpc":2,"result":{"status":"OK"},"id":"1"}
 
 --> {"jsonrpc": "2.0", "method": "getDialogsList", "id": "1"}
 <-- {"jsonrpc":2,"result":
@@ -220,6 +224,7 @@ The following types and codes are supported:
 - code: ```3101```, type: ```contactOnline```, meaning: user logged in;
 - code: ```3100```, type: ```contactOffline```, meaning: user logged out;
 - code: ```3200```, type: ```contactPersonalDataChanges```, meaning: user has changed his personal data;
+- code: ```3300```, type: ```messageWasRead```, notifies that the user has read your messages;
 
 Examples of notifications:
 ```
@@ -227,4 +232,5 @@ Examples of notifications:
 <-- {"type":"contactPersonalDataChanges","code":3200,"body":{"tag":"@admin","firstName":"Administrator"}}
 <-- {"type":"newMessage","code":3001,"body":{"senderTag":"@admin","receiverTag":"@siandreev","text":"What a nice weather today isn't it?","date":1602160273082}}
 <-- {"type":"contactOffline","code":3100,"body":{"loggedOutUserTag":"@admin"}}
+<-- {"type":"messageWasRead","code":3300,"body":{"receiverTag":"@admin"}}
 ```

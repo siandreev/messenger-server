@@ -71,6 +71,18 @@ class JsonRpcParser {
         )
     }
 
+    static stringifyError(err) {
+        return JSON.stringify(
+            {
+                jsonrpc: 2.0,
+                error: {
+                    code: err.info.code,
+                    message: err.info.message
+                },
+                id: null
+            }
+        )
+    }
 }
 
 export default JsonRpcParser;

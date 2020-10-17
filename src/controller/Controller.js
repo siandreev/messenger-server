@@ -73,6 +73,7 @@ class Controller {
             receiverTag,
             text,
             date: Date.now(),
+            isRead: false,
             conversationId
         })
         if (!success || success.errors) {
@@ -82,10 +83,12 @@ class Controller {
         return {
             status :"OK",
             message: {
+                _id: success.id,
                 senderTag,
                 receiverTag,
                 text,
                 date: Date.now(),
+                isRead: false
             }
         };
     }
@@ -146,6 +149,11 @@ class Controller {
             await UserModel.findOneAndUpdate({tag}, {lastName})
         }
         return await Controller.getSelfInfo(tag);
+    }
+
+    static async markMessagesWithUserAsRead(receiverTag, senderTag) {
+        await MessageModel.updateMany({receiverTag, senderTag}, { $set: {"isRead": true}});
+        return {status: "OK"}
     }
 }
 

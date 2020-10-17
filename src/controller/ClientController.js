@@ -59,6 +59,12 @@ class ClientController {
         await this.clientsInfo.notifyAboutUserPersonalDataChanges(this.tag, newData);
         return updated;
     }
+
+    async markMessagesWithUserAsRead(senderTag) {
+        const status = Controller.markMessagesWithUserAsRead(this.tag, senderTag);
+        await this.clientsInfo.notifyAboutMessagesWasRead(senderTag, this.tag);
+        return status;
+    }
 }
 
 export default ClientController;
