@@ -12,7 +12,7 @@ class Controller {
         const messages = await MessageModel.find()
             .or([{receiverTag : user1Tag, senderTag: user2Tag}, {receiverTag : user2Tag, senderTag: user1Tag}])
             .sort([['date', -1]])
-            .select("senderTag receiverTag text date")
+            .select("senderTag receiverTag text date isRead")
             .skip(startIndex)
             .limit(endIndex);
         return messages;
