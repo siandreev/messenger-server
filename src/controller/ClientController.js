@@ -67,7 +67,7 @@ class ClientController {
     }
 
     async findUsersByTag(tag) {
-        const users = await Controller.findUsersByTag(tag);
+        const users = await Controller.findUsersByTag(this.tag, tag);
         const onlineUsersTagsList = this.clientsInfo.getOnlineUsersTagsList();
 
         for(let user of users) {

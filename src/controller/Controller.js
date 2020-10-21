@@ -138,7 +138,7 @@ class Controller {
     }
 
     static async getSelfInfo(tag) {
-        return UserModel.findOne({tag}).select("tag firstName lastName");
+        return UserModel.findOne({tag}).select("tag firstName lastName img");
     }
 
     static async setSelfInfo(tag, firstName, lastName) {
@@ -156,10 +156,10 @@ class Controller {
         return {status: "OK"}
     }
 
-    static async findUsersByTag(tag) {
-        const tagBody = tag[0] === "@" ? tag.slice(1) : tag;
+    static async findUsersByTag(selfTag, searchTag) {
+        const tagBody = searchTag[0] === "@" ? searchTag.slice(1) : searchTag;
         const regexp = new RegExp(tagBody, 'i');
-        return UserModel.find({tag: regexp})
+        return UserModel.find({$and: [{ tag: regexp}, { tag: {$ne : selfTag}}]})
             .select("tag firstName lastName img")
             .limit(30);
     }
