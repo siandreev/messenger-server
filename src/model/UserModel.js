@@ -25,6 +25,9 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    img: {
+        type: String
+    },
     salt: {
         type: String,
         required: true,

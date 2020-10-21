@@ -54,7 +54,7 @@ class Controller {
         ).skip(startIndex).limit(endIndex);
         for (let dialog of dialogs) {
             const tag = dialog.senderTag === userTag ? dialog.receiverTag : dialog.senderTag;
-            dialog.userInfo = await UserModel.findOne({tag}).select("tag firstName lastName");
+            dialog.userInfo = await UserModel.findOne({tag}).select("tag firstName lastName img");
         }
         return dialogs;
     }
@@ -154,6 +154,14 @@ class Controller {
     static async markMessagesWithUserAsRead(receiverTag, senderTag) {
         await MessageModel.updateMany({receiverTag, senderTag}, { $set: {"isRead": true}});
         return {status: "OK"}
+    }
+
+    static async findUsersByTag(tag) {
+        const tagBody = tag[0] === "@" ? tag.slice(1) : tag;
+        const regexp = new RegExp(tagBody, 'i');
+        return UserModel.find({tag: regexp})
+            .select("tag firstName lastName img")
+            .limit(30);
     }
 }
 

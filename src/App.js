@@ -19,6 +19,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
 const app = new Express();
+const __dirname = process.cwd();
 
 app.use(bodyParser.json());
 app.use(cors({credentials: true, origin: global.appConfig.client.url}));
@@ -30,6 +31,8 @@ app.use(function(err, req, res, next) {
     const {code, json} = MessengerError.PrepareResponse(err);
     return res.status(code).json(json).end();
 });
+
+app.use(Express.static(__dirname + '/public/img'));
 
 const appPort = global.appConfig.app.port || 8000;
 
@@ -43,6 +46,5 @@ app.listen(appPort, async () => {
  Just for demo
  */
 app.get('/', (req, res) => {
-    const __dirname = process.cwd();
     res.sendFile('src/index.html', {root: __dirname })
 })

@@ -102,6 +102,7 @@ sendMessageToUser(receiverTag, text)
 getDialogsList(startIndex = 0, endIndex = 30)
 getMessagesWithUser(receiverTag, startIndex = 0, endIndex = 100)
 markMessagesWithUserAsRead(senderTag)
+findUsersByTag(tag)
 ```
 
 Requests examples:
@@ -120,6 +121,52 @@ Requests examples:
 
 --> {"jsonrpc": "2.0", "method": "markMessagesWithUserAsRead", "params": ["@admin"], "id": "1"}
 <-- {"jsonrpc":2,"result":{"status":"OK"},"id":"1"}
+
+--> {"jsonrpc": "2.0", "method": "findUsersByTag", "params": ["@s"], "id": "1"}
+<-- {"jsonrpc":2,"result":[
+        {
+            "_id":"5f7eee91c7a2691af0774a87",
+            "tag":"@first",
+            "firstName":"First",
+            "lastName":"First",
+            "img":"default.jpg","isOnline":false
+        },
+        {
+            "_id":"5f7df3f7abc9f526c0a57339",
+            "tag":"@ostrenkota",
+            "firstName":"Taya",
+            "lastName":"Ostrenko",
+            "img":"4bad835bcf4d487c9e281bc160f76214.jpg",
+            "isOnline":false
+        },
+        {
+            "_id":"5f7eef73c7a2691af0774a8a",
+            "tag":"@second",
+            "firstName":"Second",
+            "lastName":"Second",
+            "img":"default.jpg",
+            "isOnline":false
+        },
+        {
+            "_id":"5f7b106bbed28f24c084c440",
+            "tag":"@siandreev",
+            "firstName":"Sergey",
+            "lastName":"Ivanov",
+            "img":"default.jpg","isOnline":true
+        }
+    ],"id":"1"}
+
+--> {"jsonrpc": "2.0", "method": "findUsersByTag", "params": ["SIa"], "id": "1"}
+<-- {"jsonrpc":2,"result":[
+        {
+            "_id":"5f7b106bbed28f24c084c440",
+            "tag":"@siandreev",
+            "firstName":"Sergey",
+            "lastName":"Ivanov",
+            "img":"default.jpg",
+            "isOnline":true
+        }
+    ],"id":"1"}
 
 --> {"jsonrpc": "2.0", "method": "getDialogsList", "id": "1"}
 <-- {"jsonrpc":2,"result":

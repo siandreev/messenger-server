@@ -41,6 +41,7 @@ class AuthService {
                 lastName,
                 email,
                 password: passwordHashed,
+                img: "default.jpg",
                 salt: salt.toString('hex')
             });
             const token = this.generateJWT(userRecord);

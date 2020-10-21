@@ -65,6 +65,18 @@ class ClientController {
         await this.clientsInfo.notifyAboutMessagesWasRead(senderTag, this.tag);
         return status;
     }
+
+    async findUsersByTag(tag) {
+        const users = await Controller.findUsersByTag(tag);
+        const onlineUsersTagsList = this.clientsInfo.getOnlineUsersTagsList();
+
+        for(let user of users) {
+            user._doc.isOnline = onlineUsersTagsList.includes(user.tag);
+        }
+
+        return users;
+
+    }
 }
 
 export default ClientController;
