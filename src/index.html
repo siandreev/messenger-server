@@ -35,7 +35,12 @@
 
     <h3>Create websocket</h3>
     <label for="socketsPort">Websockets port (for example, 8001)</label><input id="socketsPort" type="text" name="ip"><br/>
-    <button id="generate">Create websocket</button>
+    <button id="generate">Create websocket</button><br/>
+
+    <h3>Send file</h3>
+        <input id="fileInput" type="file"><br/>
+        <button onclick="Send()">Send</button>
+
     <script>
         document.getElementById("send1").onclick = function () {
             fetch('/login', {
@@ -86,6 +91,29 @@
                     console.log('[close] Connection interrupted');
                 }
             };
+        }
+
+        function Send() {
+            const input = document.getElementById("fileInput");
+            console.log(`Send ${input.files[0].name} to server:`);
+
+            let file = input.files[0];
+            let formData = new FormData();
+            formData.append("image", file, input.files[0].name);
+
+            fetch('/upload-image', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong');
+                }})
+            .then(text => console.log(JSON.parse(text)))
+            .catch((error) => {
+                console.log(error)
+            });
         }
     </script>
 </body>

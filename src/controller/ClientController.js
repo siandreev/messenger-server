@@ -1,3 +1,4 @@
+import fs from "fs";
 import Controller from "./Controller.js";
 import {isTagCorrect, isFirstNameCorrect, isLastNameCorrect, isEmailCorrect, isPasswordCorrect} from '../libs/verifyUserData.js'
 import ArgumentsError from "../errors/JsonRpcError/ArgumentsError.js";
@@ -36,25 +37,34 @@ class ClientController {
         return await Controller.getSelfInfo(this.tag);
     }
 
-    async setSelfInfo(firstName, lastName) {
+    async setSelfInfo(firstName, lastName, img) {
         const currentUserData = await Controller.getSelfInfo(this.tag);
-        if ((firstName !== "" && !isFirstNameCorrect(firstName))
-            || (lastName !== "" && !isFirstNameCorrect(lastName))
-            || (firstName === "" && lastName === "")
-            || (firstName === "" && lastName === currentUserData.lastName)
-            || (lastName === "" && firstName === currentUserData.firstName)
-            || (firstName === currentUserData.firstName && lastName === currentUserData.lastName)) {
+        const isFirstNameValid = firstName === "" || isFirstNameCorrect(firstName);
+        const isLastNameValid = lastName === "" || isLastNameCorrect(lastName);
+        const isImgValid = img === "" || fs.existsSync(process.cwd() + "/public/img/" + img);
+        if (!isFirstNameValid || !isLastNameValid || !isImgValid) {
             throw new ArgumentsError();
         }
-        const updated = await Controller.setSelfInfo(this.tag, firstName, lastName);
+
+        const hasFirstNameBeenUpdated = firstName && firstName !== currentUserData.firstName;
+        const hasLastNameBeenUpdated = lastName && lastName !== currentUserData.lastName;
+        const hasImgBeenUpdated = img && img !== currentUserData.img;
+        if (!hasFirstNameBeenUpdated && !hasLastNameBeenUpdated && !hasImgBeenUpdated) {
+            throw new ArgumentsError();
+        }
+
+        const updated = await Controller.setSelfInfo(this.tag, firstName, lastName, img);
         const newData = {
             tag : this.tag
         };
-        if (firstName && firstName !== currentUserData.firstName) {
+        if (hasFirstNameBeenUpdated) {
             newData.firstName = firstName;
         }
-        if (lastName && lastName !== currentUserData.lastName) {
+        if (hasLastNameBeenUpdated) {
             newData.lastName = lastName;
+        }
+        if (hasImgBeenUpdated) {
+            newData.img = img;
         }
         await this.clientsInfo.notifyAboutUserPersonalDataChanges(this.tag, newData);
         return updated;

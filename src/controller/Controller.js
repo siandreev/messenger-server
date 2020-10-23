@@ -141,12 +141,15 @@ class Controller {
         return UserModel.findOne({tag}).select("tag firstName lastName img");
     }
 
-    static async setSelfInfo(tag, firstName, lastName) {
+    static async setSelfInfo(tag, firstName, lastName, img) {
         if (firstName) {
             await UserModel.findOneAndUpdate({tag}, {firstName})
         }
         if (lastName) {
             await UserModel.findOneAndUpdate({tag}, {lastName})
+        }
+        if (img) {
+            await UserModel.findOneAndUpdate({tag}, {img})
         }
         return await Controller.getSelfInfo(tag);
     }

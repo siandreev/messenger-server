@@ -4,12 +4,14 @@ import Express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
 import mongoose from 'mongoose';
 import 'express-async-errors';
 import WebSocket from 'express-ws';
 import getCurrentIp from "./libs/getCurrentIp.js";
 
 import Routes from './routes/auth-routes.js';
+import UploadImageRoute from './routes/file-uploader.js'
 import './routes/web-socket.js'
 import MessengerError from "./errors/MessengerError.js";
 
@@ -22,10 +24,17 @@ const app = new Express();
 const __dirname = process.cwd();
 
 app.use(bodyParser.json());
+app.use(fileUpload({
+    limits: {
+        fileSize: 15 * 1024 * 1024
+    },
+    abortOnLimit: true
+}));
 app.use(cors({credentials: true, origin: global.appConfig.client.url}));
 app.use(cookieParser());
 WebSocket(app);
 Routes(app);
+UploadImageRoute(app);
 
 app.use(function(err, req, res, next) {
     const {code, json} = MessengerError.PrepareResponse(err);
