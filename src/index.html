@@ -76,9 +76,9 @@
         }
 
         document.getElementById("generate").onclick = function () {
-            const socketsPort = document.getElementById("socketsPort").value || 8001;
+           // const socketsPort = document.getElementById("socketsPort").value || 8001;
            // window.socket = new WebSocket(`ws://${window.location.host.split(":")[0]}:${socketsPort}/`);
-            window.socket = new WebSocket(`ws://localhost:${socketsPort}/`);
+            window.socket = new WebSocket(`ws://localhost:8000/api`);
             console.log("Socket created");
             socket.onmessage = function(event) {
                 console.log(`[message] Data from server: ${event.data}`);

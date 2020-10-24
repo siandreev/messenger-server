@@ -16,7 +16,7 @@ export default (app) => {
             const { user, token } = await authService.Login(email, password);
 
             const cookieMaxAge = parseFloat(global.appConfig.cookie.maxAge) * 3600000 || 24 * 3600000;
-            res.cookie('auth',token,{maxAge:cookieMaxAge, httpOnly:true, secure: false})
+            res.cookie('auth',token,{maxAge:cookieMaxAge, httpOnly:true, secure: false});
             const __dirname = process.cwd();
             res.sendFile('src/index.html', {root: __dirname })
             return res.status(200).send("Login successful").end();

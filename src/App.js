@@ -7,12 +7,13 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import mongoose from 'mongoose';
 import 'express-async-errors';
-import WebSocket from 'express-ws';
+import EnableWebSocket from 'express-ws';
 import getCurrentIp from "./libs/getCurrentIp.js";
 
-import Routes from './routes/auth-routes.js';
-import UploadImageRoute from './routes/file-uploader.js'
-import './routes/web-socket.js'
+import AuthRoutes from './routes/auth-routes.js';
+import UploadImageRoute from './routes/file-uploader.js';
+import ExitRoute from './routes/exit.js';
+import CreateWebSocketServer from './routes/web-socket.js';
 import MessengerError from "./errors/MessengerError.js";
 
 mongoose.connect("mongodb://localhost:27017/auth", { useNewUrlParser: true, useUnifiedTopology: true })
@@ -32,16 +33,25 @@ app.use(fileUpload({
 }));
 app.use(cors({credentials: true, origin: global.appConfig.client.url}));
 app.use(cookieParser());
-WebSocket(app);
-Routes(app);
+
+EnableWebSocket(app);
+AuthRoutes(app);
 UploadImageRoute(app);
+ExitRoute(app);
+CreateWebSocketServer(app);
 
 app.use(function(err, req, res, next) {
     const {code, json} = MessengerError.PrepareResponse(err);
+    if (req.ws) {
+        console.log("close");
+        req.ws.close(1000, JSON.stringify(json));
+        console.log("close2");
+    }
     return res.status(code).json(json).end();
 });
 
 app.use(Express.static(__dirname + '/public/img'));
+app.use(Express.static(__dirname + '/public/build'));
 
 const appPort = global.appConfig.app.port || 8000;
 
@@ -50,10 +60,9 @@ app.listen(appPort, async () => {
     console.log(`See demo on http://${getCurrentIp()}:${appPort}`)
 });
 
-
 /*
  Just for demo
  */
-app.get('/', (req, res) => {
+app.get('/example', (req, res) => {
     res.sendFile('src/index.html', {root: __dirname })
 })
