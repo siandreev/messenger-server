@@ -50,7 +50,7 @@ app.use(function(err, req, res, next) {
     return res.status(code).json(json).end();
 });
 
-app.use(Express.static(__dirname + '/public/img'));
+app.use('/img', Express.static(__dirname + '/public/img'));
 app.use(Express.static(__dirname + '/public/build'));
 
 const appPort = global.appConfig.app.port || 8000;

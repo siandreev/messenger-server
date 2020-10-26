@@ -1,10 +1,11 @@
 import extractToken from "../middlewares/extractToken.js";
 import attachUser from "../middlewares/attachUser.js";
+import protect from "../middlewares/filesProtector.js";
 import generateRandomHex from "../libs/generateRandomHex.js";
 import MessengerError from "../errors/MessengerError.js";
 
 export default (app) => {
-    app.post('/upload-image', extractToken, attachUser, async (req, res) => {
+    app.post('/upload-image', extractToken, attachUser, protect, async (req, res) => {
         try {
             const file = req.files.image;
             const extension = file.name.split('.').pop();

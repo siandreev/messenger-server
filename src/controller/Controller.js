@@ -36,13 +36,27 @@ class Controller {
                     }
                 },
                 {
+                    $project: {
+                        conversationId: "$conversationId",
+                        senderTag : "$senderTag",
+                        receiverTag: "$receiverTag",
+                        date: "$date",
+                        text: "$text",
+                        item: 1,
+                        unread: {
+                            $cond: [{$eq: ["$isRead", false]}, 1, 0]
+                        }
+                    }
+                },
+                {
                     $group:
                         {
                             _id: "$conversationId",
                             senderTag: {$last: "$senderTag"},
                             receiverTag: {$last: "$receiverTag"},
                             date: { $last: "$date" },
-                            text: {$last: "$text"}
+                            text: {$last: "$text"},
+                            unreadCount: {$sum: "$unread"}
                         }
                 },
                 {
