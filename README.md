@@ -38,8 +38,8 @@ fetch('/signup', {
 After that, you can connect using the websocket protocol, for example:
 ```
 //create socket
-const host =  "192.168.0.107:8001";
-window.socket = new WebSocket(`ws://${host}/`);
+const host =  "localhost:8000";
+window.socket = new WebSocket(`ws://${host}/api`);
 
 socket.onmessage = function(event) {
     console.log(`[message] Data from server: ${event.data}`);
@@ -77,8 +77,7 @@ First, configure your application in config.json file and place it in the server
     "maxAge": "72h"
   },
   "webSocket": {
-    "host": "",
-    "port": 8001
+    "host": ""
   },
   "app": {
     "port": 8000
@@ -108,7 +107,7 @@ findUsersByTag(tag)
 Requests examples:
 ```
 --> {"jsonrpc": "2.0", "method": "getSelfInfo", "id": "1"}
-<-- {"jsonrpc":2,"result":{"_id":"5f7b106bbed28f24c084c440","tag":"@siandreev","firstName":"Sergey","lastName":"Andreev"},"id":"1"}
+<-- {"jsonrpc":2,"result":{"_id":"5f7b106bbed28f24c084c440","tag":"@siandreev","firstName":"Sergey","lastName":"Andreev","img":"5a3e87d927b652c3428c2c5bec133e08.png"},"id":"1"}
 
 --> {"jsonrpc": "2.0", "method": "setSelfInfo", "params":["", "Ivanov"], "id": "1"}
 <-- {"jsonrpc":2,"result":{"_id":"5f7b106bbed28f24c084c440","tag":"@siandreev","firstName":"Sergey","lastName":"Ivanov"},"id":"1"}
@@ -169,89 +168,120 @@ Requests examples:
     ],"id":"1"}
 
 --> {"jsonrpc": "2.0", "method": "getDialogsList", "id": "1"}
-<-- {"jsonrpc":2,"result":
-        [
-            {
-                "_id":"5f7de7cd72b1c835f0090919",
-                "senderTag":"@siandreev",
-                "receiverTag":"@admin",
-                "date":"2020-10-08T12:06:58.447Z",
-                "text":"hi, admin",
-                "userInfo":{"_id":"5f7b4af4300f0c2dc462de6d","tag":"@admin","firstName":"Sergey","lastName":"Andreev","isOnline":false}},
-            {
-                "_id":"5f7e0e9a7fc1d90f68d4509e",
-                "senderTag":"@user",
-                "receiverTag":"@siandreev",
-                "date":"2020-10-07T18:55:06.830Z",
-                "text":"hi siandreev from user",
-                "userInfo":{"_id":"5f7df3f7abc9f526c0a57339","tag":"@user","firstName":"Ivan","lastName":"Ivanov","isOnline":true}},
-            {
-                "_id":"5f7de964b142be0494b3faf6",
-                "senderTag":"@moderator",
-                "receiverTag":"@siandreev",
-                "date":"2020-10-07T16:14:28.142Z",
-                "text":"hi siandreev from moderator",
-                "userInfo":{"_id":"5f7b5d9f73da78315cfc3624","tag":"@moderator","firstName":"Sergey","lastName":"Andreev","isOnline":false}
-            }
-        ],"id":"1"}
+<-- {"jsonrpc": 2,
+      "result": [
+        {
+          "_id": "5f96a492dd5440127c12b414",
+          "senderTag": "@siandreev",
+          "receiverTag": "@test",
+          "date": "2020-10-26T13:05:37.971Z",
+          "text": "!",
+          "unreadCount": 0,
+          "userInfo": {
+            "_id": "5f96a44bdd5440127c12b413",
+            "tag": "@test",
+            "firstName": "Test",
+            "lastName": "Test",
+            "img": "3f62cf13043c9f7fc2f2d42b0b89f606.jpg",
+            "isOnline": false
+          }
+        },
+        {
+          "_id": "5f95bd6b922a3416d0c30237",
+          "senderTag": "@siandreev",
+          "receiverTag": "@ostrenkotai",
+          "date": "2020-10-26T13:00:53.430Z",
+          "text": "😍",
+          "unreadCount": 1,
+          "userInfo": {
+            "_id": "5f95bd40922a3416d0c30236",
+            "tag": "@ostrenkotai",
+            "firstName": "Taisia",
+            "lastName": "Ostrenko",
+            "img": "9ecaa2409902345f0b7fee1b6f7ae05d.jpg",
+            "isOnline": false
+          }
+        },
+        {
+          "_id": "5f7de964b142be0494b3faf6",
+          "senderTag": "@moderator",
+          "receiverTag": "@siandreev",
+          "date": "2020-10-25T20:45:04.590Z",
+          "text": "Как дела?",
+          "unreadCount": 0,
+          "userInfo": {
+            "_id": "5f7b5d9f73da78315cfc3624",
+            "tag": "@moderator",
+            "firstName": "Sergey",
+            "lastName": "Mobile",
+            "img": "22ced17270827386bc5577baf3def745.jpg",
+            "isOnline": false
+          }
+        },
+        {
+          "_id": "5f7e0e9a7fc1d90f68d4509e",
+          "senderTag": "@ostrenkota",
+          "receiverTag": "@siandreev",
+          "date": "2020-10-25T17:42:26.097Z",
+          "text": "hi",
+          "unreadCount": 0,
+          "userInfo": {
+            "_id": "5f7df3f7abc9f526c0a57339",
+            "tag": "@ostrenkota",
+            "firstName": "Taya",
+            "lastName": "Ostrenko",
+            "img": "63dd709a8e83ec2b2106b2a8bcc79d19.png",
+            "isOnline": false
+          }
+        }
+      ],"id":"1"}
 
---> {"jsonrpc": "2.0", "method": "getDialogsList", "params": [1], "id": "1"}
-<-- {"jsonrpc":2,"result":
-        [
-            {
-                "_id":"5f7e0e9a7fc1d90f68d4509e",
-                "senderTag":"@user",
-                "receiverTag":"@siandreev",
-                "date":"2020-10-07T18:55:06.830Z",
-                "text":"hi siandreev from user",
-                "userInfo":{"_id":"5f7df3f7abc9f526c0a57339","tag":"@user","firstName":"Ivan","lastName":"Ivanov","isOnline":true}},
-            {
-                "_id":"5f7de964b142be0494b3faf6",
-                "senderTag":"@moderator",
-                "receiverTag":"@siandreev",
-                "date":"2020-10-07T16:14:28.142Z",
-                "text":"hi siandreev from moderator",
-                "userInfo":{"_id":"5f7b5d9f73da78315cfc3624","tag":"@moderator","firstName":"Sergey","lastName":"Andreev","isOnline":false}
-            }
-        ],"id":"1"}
 
---> {"jsonrpc": "2.0", "method": "getMessagesWithUser", "params": ["@admin"], "id": "1"}
-<-- {"jsonrpc":2,"result":
-        [
-            {
-                "_id":"5f7f00e2bb456e0144a7f2db",
-                "senderTag":"@siandreev",
-                "receiverTag":"@admin",
-                "text":"hi, admin",
-                "date":"2020-10-08T12:06:58.447Z"
-            },
-            {
-                "_id":"5f7df2a8abc9f526c0a57338",
-                "senderTag":"@admin",
-                "receiverTag":"@siandreev",
-                "text":"fine, thx",
-                "date":"2020-10-07T16:54:00.820Z"
-            },
-            {
-                "_id":"5f7df289abc9f526c0a57337",
-                "senderTag":"@siandreev",
-                "receiverTag":"@admin",
-                "text":"how r u?","date":"2020-10-07T16:53:29.318Z"
-            },
-            {
-                "_id":"5f7de8fab142be0494b3faee",
-                "senderTag":"@admin",
-                "receiverTag":"@siandreev",
-                "text":"hi siandreev",
-                "date":"2020-10-07T16:12:42.772Z"},
-            {
-                "_id":"5f7de8c1b142be0494b3faed",
-                "senderTag":"@siandreev",
-                "receiverTag":"@admin",
-                "text":"hi",
-                "date":"2020-10-07T16:11:45.460Z"
-            }
-        ],"id":"1"}
+--> {"jsonrpc": "2.0", "method": "getMessagesWithUser", "params": ["@test"], "id": "1"}
+<-- {
+      "jsonrpc": 2,
+      "result": [
+        {
+          "_id": "5f96c9a1251b99104cd693e5",
+          "senderTag": "@siandreev",
+          "receiverTag": "@test",
+          "text": "!",
+          "date": "2020-10-26T13:05:37.971Z",
+          "isRead": true
+        },
+        {
+          "_id": "5f96c980251b99104cd693e4",
+          "senderTag": "@test",
+          "receiverTag": "@siandreev",
+          "text": "😋",
+          "date": "2020-10-26T13:05:04.708Z",
+          "isRead": true
+        },
+        {
+          "_id": "5f96c85c251b99104cd693e2",
+          "senderTag": "@test",
+          "receiverTag": "@siandreev",
+          "text": "Qw",
+          "date": "2020-10-26T13:00:12.881Z",
+          "isRead": true
+        },
+        {
+          "_id": "5f96c85c251b99104cd693e1",
+          "senderTag": "@test",
+          "receiverTag": "@siandreev",
+          "text": "Qw",
+          "date": "2020-10-26T13:00:12.740Z",
+          "isRead": true
+        },
+        {
+          "_id": "5f96c838251b99104cd693e0",
+          "senderTag": "@siandreev",
+          "receiverTag": "@test",
+          "text": "1",
+          "date": "2020-10-26T12:59:36.754Z",
+          "isRead": true
+        }
+      ],"id":"1"}
 ```
 
 ## Notifications
@@ -276,7 +306,7 @@ The following types and codes are supported:
 Examples of notifications:
 ```
 <-- {"type":"contactOnline","code":3101,"body":{"loggedInUserTag":"@admin"}}
-<-- {"type":"contactPersonalDataChanges","code":3200,"body":{"tag":"@admin","firstName":"Administrator"}}
+<-- {"type":"contactPersonalDataChanges","code":3200,"body":{"tag":"@admin","firstName":"Administrator", "img":"1cd301394749c914408e2d959eebf431.png"}}
 <-- {"type":"newMessage","code":3001,"body":{"senderTag":"@admin","receiverTag":"@siandreev","text":"What a nice weather today isn't it?","date":1602160273082}}
 <-- {"type":"contactOffline","code":3100,"body":{"loggedOutUserTag":"@admin"}}
 <-- {"type":"messageWasRead","code":3300,"body":{"receiverTag":"@admin"}}

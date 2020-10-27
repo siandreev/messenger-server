@@ -57,7 +57,7 @@ const appPort = global.appConfig.app.port || 8000;
 
 app.listen(appPort, async () => {
     console.log(`Server run on ${appPort} port`);
-    console.log(`See demo on http://${getCurrentIp()}:${appPort}`)
+    console.log(`See demo on http://${getCurrentIp()}:${appPort}/example`)
 });
 
 /*
